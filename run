@@ -3,10 +3,12 @@
 from uuid import uuid4
 
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 from solver_service import SolverService
 from solvers.exception import InvalidEquationError, MissingSolutionError, InvalidEquationTypeError
 
 app = Flask(__name__)
+CORS(app)
 
 solver_service = SolverService()
 

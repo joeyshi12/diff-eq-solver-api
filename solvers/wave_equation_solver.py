@@ -39,6 +39,8 @@ class WaveEquationSolver(DifferentialEquationSolver):
             D[i, i] = r
             D[i, i + 1] = 2 * (1 - r)
             D[i, i + 2] = r
+
+        # initialize solution array
         solution = np.zeros((time_samples, equation.samples))
         solution[0] = equation.initial_condition[0](np.arange(equation.samples) * dx)
         solution[1, 1:equation.samples - 1] = 0.5 * D @ solution[0]
@@ -49,6 +51,8 @@ class WaveEquationSolver(DifferentialEquationSolver):
             else solution[1, 1] - left_condition.function(dt) * dx
         solution[1, -1] = right_condition.function(dt) if right_condition.type == 'D' \
             else solution[1, -2] + right_condition.function(dt) * dx
+
+        # compute rest of solution values
         for k in range(1, time_samples):
             solution[k, 1:equation.samples - 1] = D @ solution[k - 1]
             solution[k, 0] = left_condition.function(k * dt) if left_condition.type == 'D' \

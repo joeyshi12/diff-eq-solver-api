@@ -39,12 +39,12 @@ class HeatEquationSolver(DifferentialEquationSolver):
             D[i, i + 1] = 1 - 2 * r
             D[i, i + 2] = r
 
-        # initialize solution arra
+        # initialize solution array
         solution = np.zeros((time_samples, equation.samples))
         solution[0] = equation.initial_condition[0](np.arange(equation.samples) * dx)
         left_condition, right_condition = equation.boundary.left_condition, equation.boundary.right_condition
 
-        # initialize solution array
+        # compute rest of solution values
         for k in range(1, time_samples):
             solution[k, 1:equation.samples - 1] = D @ solution[k - 1]
             solution[k, 0] = left_condition.function(k * dt) if left_condition.type == 'D' \

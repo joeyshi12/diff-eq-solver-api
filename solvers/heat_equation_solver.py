@@ -9,7 +9,7 @@ from solvers.exception import InvalidEquationError
 
 class HeatEquationSolver(DifferentialEquationSolver):
     def parse_equation(self, params: Dict) -> HeatEquation:
-        print('Parsing heat equation: %s' % str(params))
+        print('Parsing: %s' % str(params))
         try:
             alpha = float(params['alpha'])
             length = float(params['length'])

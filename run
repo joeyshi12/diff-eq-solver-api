@@ -2,7 +2,7 @@
 
 from uuid import uuid4
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, json
 from flask_cors import CORS
 from solver_service import SolverService
 from solvers.exception import InvalidEquationError, MissingSolutionError, InvalidEquationTypeError
@@ -20,24 +20,24 @@ def solve_equation(type: str):
         equation = solver_service.parse_equation(type, data)
         equation_id = str(uuid4())
         solver_service.solve_and_store(type, equation_id, equation)
-        return jsonify({'id': equation_id})
+        return jsonify({'id': equation_id}), 200
     except InvalidEquationTypeError:
-        return jsonify({'message': 'invalid equation type received'})
+        return jsonify({'message': 'invalid equation type received'}), 500
     except InvalidEquationError:
-        return jsonify({'message': 'invalid equation parameters received'})
+        return jsonify({'message': 'invalid equation parameters received'}), 500
 
 
 @app.route('/solutions', methods=['GET'])
 def get_all_solutions():
-    return jsonify(solver_service.get_all_solutions())
+    return jsonify(solver_service.get_all_solutions()), 200
 
 
 @app.route('/solutions/<id>', methods=['GET'])
 def get_solution_by_id(id: str):
     try:
-        return jsonify(solver_service.get_by_id(id))
+        return jsonify(solver_service.get_by_id(id)), 200
     except MissingSolutionError:
-        return jsonify({'message': 'solution with id %s does not exist' % id})
+        return jsonify({'message': 'solution with id %s does not exist' % id}), 500
 
 
 if __name__ == '__main__':

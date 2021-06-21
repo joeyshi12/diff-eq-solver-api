@@ -8,7 +8,7 @@ from solvers.exception import InvalidEquationError
 
 class SecondOrderODESolver(DifferentialEquationSolver):
     def parse_equation(self, params: Dict) -> SecondOrderODE:
-        print('Parsing second order ODE: %s' % str(params))
+        print('Parsing: %s' % str(params))
         try:
             samples = int(params['samples'])
             time_period = float(params['time_period'])

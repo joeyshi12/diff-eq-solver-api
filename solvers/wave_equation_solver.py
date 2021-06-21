@@ -9,7 +9,7 @@ from solvers.exception import InvalidEquationError
 
 class WaveEquationSolver(DifferentialEquationSolver):
     def parse_equation(self, params: Dict) -> WaveEquation:
-        print('Parsing wave equation: %s' % str(params))
+        print('Parsing: %s' % str(params))
         try:
             c = float(params['c'])
             length = float(params['length'])

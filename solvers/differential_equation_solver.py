@@ -1,11 +1,12 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
+from typing import Dict
 
 from solvers.equation import DifferentialEquation, DifferentialEquationSolution
 
 
-class DifferentialEquationSolver:
+class DifferentialEquationSolver(ABC):
     @abstractmethod
-    def parse_equation(self, params: object) -> DifferentialEquation:
+    def parse_equation(self, params: Dict) -> DifferentialEquation:
         raise NotImplementedError
 
     @abstractmethod

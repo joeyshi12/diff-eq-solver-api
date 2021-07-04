@@ -2,9 +2,9 @@ from typing import Dict
 
 import numpy as np
 
-from solvers.differential_equation_solver import DifferentialEquationSolver
-from solvers.equation import WaveEquation, DifferentialEquationSolution, Boundary, BoundaryCondition
-from solvers.exception import InvalidEquationError
+from app.solvers.differential_equation_solver import DifferentialEquationSolver
+from app.equation import WaveEquation, DifferentialEquationSolution, Boundary, BoundaryCondition, BoundaryType
+from app.exception import InvalidEquationError
 
 
 class WaveEquationSolver(DifferentialEquationSolver):
@@ -18,13 +18,19 @@ class WaveEquationSolver(DifferentialEquationSolver):
             left_condition = params['boundary']['left_condition']
             right_condition = params['boundary']['right_condition']
             boundary = Boundary(
-                BoundaryCondition(left_condition['type'], lambda t: eval(left_condition['function'])),
-                BoundaryCondition(right_condition['type'], lambda t: eval(right_condition['function']))
+                BoundaryCondition(
+                    BoundaryType[left_condition['type']],
+                    lambda t: eval(left_condition['function'])
+                ),
+                BoundaryCondition(
+                    BoundaryType[right_condition['type']],
+                    lambda t: eval(right_condition['function'])
+                )
             )
             def initial_values(x: float) -> float: return eval(params['initial_condition'][0])
             def initial_derivatives(x: float) -> float: return eval(params['initial_condition'][1])
             return WaveEquation(c, length, time_period, samples, boundary, [initial_values, initial_derivatives])
-        except(KeyError, ValueError, NameError):
+        except:
             raise InvalidEquationError
 
     def solve(self, equation: WaveEquation) -> DifferentialEquationSolution:
@@ -47,16 +53,16 @@ class WaveEquationSolver(DifferentialEquationSolver):
         solution[1, 1:equation.samples - 1] +=\
             dt ** 2 * equation.initial_condition[1](np.arange(1, equation.samples - 1) * dx)
         left_condition, right_condition = equation.boundary.left_condition, equation.boundary.right_condition
-        solution[1, 0] = left_condition.function(dt) if left_condition.type == 'D' \
+        solution[1, 0] = left_condition.function(dt) if left_condition.type == BoundaryType.dirichlet \
             else solution[1, 1] - left_condition.function(dt) * dx
-        solution[1, -1] = right_condition.function(dt) if right_condition.type == 'D' \
+        solution[1, -1] = right_condition.function(dt) if right_condition.type == BoundaryType.dirichlet \
             else solution[1, -2] + right_condition.function(dt) * dx
 
         # compute rest of solution values
         for k in range(1, time_samples):
             solution[k, 1:equation.samples - 1] = D @ solution[k - 1]
-            solution[k, 0] = left_condition.function(k * dt) if left_condition.type == 'D' \
+            solution[k, 0] = left_condition.function(k * dt) if left_condition.type == BoundaryType.dirichlet \
                 else solution[k, 1] - left_condition.function(k * dt) * dx
-            solution[k, -1] = right_condition.function(k * dt) if right_condition.type == 'D' \
+            solution[k, -1] = right_condition.function(k * dt) if right_condition.type == BoundaryType.dirichlet \
                 else solution[k, -2] + right_condition.function(k * dt) * dx
         return DifferentialEquationSolution(dimensions, solution.tolist())

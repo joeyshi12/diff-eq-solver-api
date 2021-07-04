@@ -1,7 +1,7 @@
 from abc import abstractmethod, ABC
 from typing import Dict
 
-from solvers.equation import DifferentialEquation, DifferentialEquationSolution
+from app.equation import DifferentialEquation, DifferentialEquationSolution
 
 
 class DifferentialEquationSolver(ABC):

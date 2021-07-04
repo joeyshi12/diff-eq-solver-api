@@ -1,9 +1,9 @@
 import numpy as np
 from typing import Dict
 
-from solvers.differential_equation_solver import DifferentialEquationSolver
-from solvers.equation import FirstOrderODE, DifferentialEquationSolution
-from solvers.exception import InvalidEquationError
+from app.solvers.differential_equation_solver import DifferentialEquationSolver
+from app.equation import FirstOrderODE, DifferentialEquationSolution
+from app.exception import InvalidEquationError
 
 
 class FirstOrderODESolver(DifferentialEquationSolver):
@@ -15,7 +15,7 @@ class FirstOrderODESolver(DifferentialEquationSolver):
             initial_value = float(params['initial_value'])
             def source(t: float, x: float) -> float: return eval(params['source'])
             return FirstOrderODE(samples, time_period, initial_value, source)
-        except(KeyError, ValueError, NameError):
+        except:
             raise InvalidEquationError
 
     def solve(self, equation: FirstOrderODE) -> DifferentialEquationSolution:

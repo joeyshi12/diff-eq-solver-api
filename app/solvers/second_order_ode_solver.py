@@ -1,9 +1,9 @@
 import numpy as np
 from typing import Dict
 
-from solvers.differential_equation_solver import DifferentialEquationSolver
-from solvers.equation import SecondOrderODE, DifferentialEquationSolution
-from solvers.exception import InvalidEquationError
+from app.solvers.differential_equation_solver import DifferentialEquationSolver
+from app.equation import SecondOrderODE, DifferentialEquationSolution
+from app.exception import InvalidEquationError
 
 
 class SecondOrderODESolver(DifferentialEquationSolver):
@@ -16,7 +16,7 @@ class SecondOrderODESolver(DifferentialEquationSolver):
             initial_derivative = float(params['initial_derivative'])
             def source(t: float, x: float, y: float) -> float: return eval(params['source'])
             return SecondOrderODE(samples, time_period, initial_value, initial_derivative, source)
-        except(KeyError, ValueError, NameError):
+        except:
             raise InvalidEquationError
 
     def solve(self, equation: SecondOrderODE) -> DifferentialEquationSolution:

@@ -20,9 +20,14 @@ class SecondOrderODE:
     source: Callable[[float, float, float], float]
 
 
+class BoundaryType(Enum):
+    dirichlet = 'dirichlet'
+    neumann = 'neumann'
+
+
 @dataclass
 class BoundaryCondition:
-    type: Enum('D', 'N')
+    type: BoundaryType
     function: Callable[[float], float]
 
 

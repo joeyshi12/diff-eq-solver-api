@@ -32,7 +32,17 @@ class SolverService:
         equation = self._parse_equation(equation_type, data)
         self._executor.submit_stored(equation_id, solver.solve, equation)
 
-    def get_by_id(self, equation_id: str) -> DifferentialEquationSolution:
+    def check_status(self, equation_id: str) -> str:
+        future_collection = self._executor.futures
+        is_done = future_collection.done(equation_id)
+        if is_done is None:
+            return "failed"
+        elif not is_done:
+            return "running"
+        else:
+            return "success"
+
+    def get_solution(self, equation_id: str) -> DifferentialEquationSolution:
         future_collection = self._executor.futures
         is_done = future_collection.done(equation_id)
         if is_done is None:
